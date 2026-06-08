@@ -5,11 +5,12 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateItemRequest extends FormRequest {
-public function authorize() {
-return true;
-}
-protected function prepareForValidation()
-    {
+    
+    public function authorize() {
+        return true;
+    }
+
+    protected function prepareForValidation() {
         $input = $this->all();
         
         array_walk($input, function (&$val) {
@@ -20,19 +21,19 @@ protected function prepareForValidation()
         
         $this->merge($input);
     }
-public function rules() {
-return [
-        'name' => 'sometimes|required|string|max:255',
-        'quantity' => 'sometimes|required|integer|min:0',
-        'price' => 'sometimes|required|numeric|min:0',
-        'category_id' =>
-        'sometimes|required|exists:categories,id',
-];
-}
-public function messages() {
-return [
-'sometimes.required' => 'Field ini diperlukan saat
-diubah.',
-];
-}
+
+    public function rules() {
+        return [
+            'name' => 'sometimes|required|string|max:255',
+            'quantity' => 'sometimes|required|integer|min:0',
+            'price' => 'sometimes|required|numeric|min:0',
+            'category_id' => 'sometimes|required|exists:categories,id',
+        ];
+    }
+
+    public function messages() {
+        return [
+            'sometimes.required' => 'Field ini diperlukan saat diubah.',
+        ];
+    }
 }
