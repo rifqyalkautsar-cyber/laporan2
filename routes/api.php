@@ -16,7 +16,7 @@ Route::prefix('v1')->group(function() {
         // Items
         Route::apiResource('items', 'App\Http\Controllers\ItemController')->except(['destroy']);
         Route::delete('items/{item}', 'App\Http\Controllers\ItemController@destroy')->middleware('role:admin');
-        
+        // Ini adalah komentar untuk testing fitur review
     });
     
 });
