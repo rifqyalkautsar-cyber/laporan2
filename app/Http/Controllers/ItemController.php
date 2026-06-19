@@ -1,38 +1,92 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\Item; // 
+use App\Services\ItemService;
+use App\Http\Requests\StoreItemRequest;
+use App\Http\Requests\UpdateItemRequest; 
+use App\Models\Item;
 use Illuminate\Http\Request;
 
-class ItemController extends Controller
-{
-    public function index()
-    {
-        return response()->json(Item::all(), 200);
+class ItemController extends Controller {
+    protected ItemService $svc;
+    
+    public function __construct(ItemService $svc) {
+        $this->svc = $svc;
+    }
+    
+    // INI ADALAH FUNGSI INDEX BARU UNTUK MODUL 6 (Filter Kategori)
+    public function index(Request $request) {
+        $query = Item::with('category');
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $query->get(),
+            'message' => 'Berhasil menarik semua data Item'
+        ]);
+    }
+    
+    // SISA KODE DI BAWAH INI ADALAH HASIL MODUL 5 YANG HARUS DIPERTAHANKAN
+    public function store(StoreItemRequest $req) {
+        $item = $this->svc->create($req->validated());
+        return response()->json([
+            'status' => 'success',
+            'data' => $item,
+            'message' => 'Item berhasil dibuat'
+        ], 201);
+    }
+    
+    public function show($id) {
+        try {
+            $item = $this->svc->find($id);
+            return response()->json([
+                'status' => 'success',
+                'data' => $item,
+                'message' => 'Berhasil menarik satu data Item'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'data' => null,
+                'message' => $e->getMessage()
+            ], 404);
+        }
     }
 
-    public function store(Request $request)
-    {
-        $item = Item::create($request->all());
-        return response()->json($item, 201);
+    public function update(UpdateItemRequest $req, $id) {
+        try {
+            $item = $this->svc->update($id, $req->validated());
+            return response()->json([
+                'status' => 'success',
+                'data' => $item,
+                'message' => 'Item berhasil diperbarui'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'data' => null,
+                'message' => $e->getMessage()
+            ], 404);
+        }
     }
 
-    public function show(string $id)
-    {
-        return response()->json(Item::findOrFail($id), 200);
-    }
-
-    public function update(Request $request, string $id)
-    {
-        $item = Item::findOrFail($id);
-        $item->update($request->all());
-        return response()->json($item, 200);
-    }
-
-    public function destroy(string $id)
-    {
-        Item::destroy($id);
-        return response()->json(['message' => 'Item dihapus'], 200);
+    public function destroy($id) {
+        try {
+            $this->svc->delete($id);
+            return response()->json([
+                'status' => 'success',
+                'data' => null,
+                'message' => 'Item berhasil dihapus'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'data' => null,
+                'message' => $e->getMessage()
+            ], 404);
+        }
     }
 }
