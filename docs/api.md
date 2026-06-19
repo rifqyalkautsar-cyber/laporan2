@@ -28,3 +28,6 @@ Base URL: `http://localhost:8000/api/v1`
 * **GET /items/{id}**
 * **PUT /items/{id}** -> Body: `{ name, quantity, price, category_id }`
 * **DELETE /items/{id}** (admin only)
+
+## dokumentasi baru GET /items?category_id={id}
+* **Filter items by category, optional.**
