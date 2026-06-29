@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('v1')->group(function() {
+// Tambahkan ->middleware('throttle:60,1') di sini 👇
+Route::prefix('v1')->middleware('throttle:60,1')->group(function() {
     
     Route::post('register', 'App\Http\Controllers\AuthController@register');
     Route::post('login', 'App\Http\Controllers\AuthController@login');
