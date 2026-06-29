@@ -31,6 +31,10 @@ class ItemController extends Controller {
     
     // SISA KODE DI BAWAH INI ADALAH HASIL MODUL 5 YANG HARUS DIPERTAHANKAN
     public function store(StoreItemRequest $req) {
+        
+        // Tambahkan kode dd() di sini 👇
+        dd($req->all()); 
+
         $item = $this->svc->create($req->validated());
         return response()->json([
             'status' => 'success',
